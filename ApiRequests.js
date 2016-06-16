@@ -9,7 +9,6 @@ exports.lookup = function (device_id , callback){
   var path = "/api/lookup"
   var lookup_url = url + path + "?" + device_id;
   api_request(lookup_url, callback);
-}
 
 exports.regcode = function  (device_id , callback){
   var path = "/api/regcode"

@@ -1,19 +1,4 @@
-/**
- * This sample demonstrates a simple skill built with the Amazon Alexa Skills Kit.
- * The Intent Schema, Custom Slots, and Sample Utterances for this skill, as well as
- * testing instructions are located at http://amzn.to/1LzFrj6
- *
- * For additional samples, visit the Alexa Skills Kit Getting Started guide at
- * http://amzn.to/1LGWsLG
- */
-
-// Route the incoming request based on type (LaunchRequest, IntentRequest,
-// etc.) The JSON body of the request is provided in the event parameter.
- //I DID NOT WRITE THIS
- //THIS DEALS WITH ROUTING DIFFRENT EVENT TYPES
- //WE ONLY USE THE INTENT EVENTS
-
-var http = require('http');
+var api = require('./ApiRequests.js');
 var app_id = "";
 
 exports.handler = function (event, context) {
@@ -77,6 +62,7 @@ function onLaunch(launchRequest, session, callback) {
 
     // Dispatch to your skill's launch.
     getWelcomeResponse(callback);
+    getService(launchRequest, session, callback);
 }
 
 /**
@@ -144,6 +130,10 @@ function getRegistrationCode(intent, session, callback){
 
 }
 
+function getService(intent, session, callback){
+  
+}
+
 // --------------- Functions that control the skill's behavior -----------------------
 //RESPONSE ON SKILL LAUNCH
 function getWelcomeResponse(callback) {
@@ -168,66 +158,6 @@ function handleSessionEndRequest(callback) {
     callback({}, buildSpeechletResponse(cardTitle, speechOutput, null, shouldEndSession));
 }
 
-//THIS IS MY CUSTOM INTENT FUCNTION
-//
-function guessNumber(intent, session, callback){
-      var cardTitle = intent.name;
-      var guessSlot = intent.slots.Guess;
-      var repromptText = "";
-      var sessionAttributes = {};
-      var shouldEndSession = false;
-      var speechOutput = "";
-
-      //checks that we are on the correct intent
-      if(guessSlot){
-        //this can be empty/null
-        var guess = guessSlot.value;
-        var answer;
-          //checks the session (Cookies?) to see if a answer has been set
-          if(session.attributes){
-            answer = session.attributes.numberToGuess;
-          }
-          //checks if answer has been set
-          if(answer){
-            //if guess is correct. the == will cast the string value of guess to a number.
-            // === uses strict typing so 1 === "1" is false
-            // == is loose typing 1 =="1" is true
-            if( answer == guess){
-              speechOutput = "You Win. Goodbye"
-              //this automaitcally handels ending the session
-              shouldEndSession = true;
-            }else{
-              speechOutput = "Wrong number";
-              repromptText = "Please guess another number between one and ten";
-
-              //puts the answer in the session (cookie?)
-              sessionAttributes = {numberToGuess : parseInt(answer)};
-            }
-          }else{
-              speechOutput = "We have not started yet";
-              repromptText = "Ok. I'm ready. Please guess a number between one and ten";
-              //creates a new random number and puts it in the session
-              sessionAttributes = createNumberAttribute();
-          }
-      } else {
-        speechOutput = "That guess was not a number";
-        repromptText = "Please guess a number between one and ten";
-      }
-
-      //this is amazon boiler plate. I'm not totally sure whats happening here
-      callback(sessionAttributes,
-           buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
-
-}
-
-//creates random number between [1,10] and puts it in a session/
-function createNumberAttribute(){
-  return {
-    numberToGuess: Math.floor(Math.random() * (10 - 1 + 1) + 1)
-  };
-}
-
-//I DID NOT BUILD THIS
 function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
     return {
         outputSpeech: {
@@ -249,7 +179,6 @@ function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
     };
 }
 
-//I DID NOT BUILD THIS
 function buildResponse(sessionAttributes, speechletResponse) {
     return {
         version: "1.0",
