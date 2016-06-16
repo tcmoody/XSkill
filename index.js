@@ -61,7 +61,7 @@ function onLaunch(launchRequest, session, callback) {
         ", sessionId=" + session.sessionId);
 
     // Dispatch to your skill's launch.
-    getWelcomeResponse(callback);
+    getWelcomeResponse(callback, session);
 }
 
 /**
@@ -81,7 +81,7 @@ function onIntent(intentRequest, session, callback) {
         getRegistrationCode(intent, session, callback);
     }else if ("AMAZON.HelpIntent" === intentName) {
       //CHANGE THIS SHOULD PROBABLY CALL GET REGISTRATION CODE
-        getWelcomeResponse(callback);
+        getWelcomeResponse(callback, session);
     } else if ("AMAZON.StopIntent" === intentName || "AMAZON.CancelIntent" === intentName) {
         handleSessionEndRequest(callback);
     } else {
@@ -108,18 +108,22 @@ function onSessionEnded(sessionEndedRequest, session) {
 * 2a) if user does not exist give them registration token
 * 2b) if user exists register call for help in database
 */
-function getWelcomeResponse(callback){
+function getWelcomeResponse(callback, session){
+
+ api.service(session.user.userId, welcomeCallback, callback);
+ 
+}
+
+function welcomeCallback(result, callback){
   var sessionAttributes = {};
   var cardTitle = "Welcome";
-  var speechOutput = "Welcome to the Number Guessing Game.";
+  var speechOutput = result;
   var repromptText = ""
   var shouldEndSession = false;
-
 
   callback(sessionAttributes,
       buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
-
 // //tell user that request has been handeled
 // function handleSessionEndRequest(callback) {
 //
