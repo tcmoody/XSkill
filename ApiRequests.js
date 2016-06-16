@@ -7,18 +7,18 @@ var self = this;
 var exports = module.exports = {};
 exports.lookup = function (device_id , callback){
   var path = "/api/lookup"
-  var lookup_url = url + path + "?" + device_id;
+  var lookup_url = url + path + "?device_id=" + device_id;
   api_request(lookup_url, callback);
 
 exports.regcode = function  (device_id , callback){
   var path = "/api/regcode"
-  var lookup_url = url + path + "?" + device_id;
+  var lookup_url = url + path + "?device_id=" + device_id;
   api_request(lookup_url, callback);
 }
 
 exports.service = function (device_id , callback){
   var path = "/api/service"
-  var lookup_url = url + path + "?" + device_id;
+  var lookup_url = url + path + "?device_id=" + device_id;
   api_request(lookup_url, callback);
 }
 
@@ -27,7 +27,6 @@ exports.service = function (device_id , callback){
     if(error){
       console.log('Error', error);
     }
-
     if(response.statusCode == 200){
       callback(body);
     }else{
