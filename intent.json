@@ -2,6 +2,9 @@
   "intents": [
     {
       "intent": "GetRegistrationCodeIntent"
+    },
+    {
+      "intent": "GetHelpIntent"
     }
   ]
 }

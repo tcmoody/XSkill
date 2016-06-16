@@ -1,0 +1,11 @@
+GetRegistrationCodeIntent what is my registration code
+GetRegistrationCodeIntent give me my registration code
+GetRegistrationCodeIntent can I get my registration code
+GetHelpIntent call for help
+GetHelpIntent I need some help
+GetHelpIntent get me some help
+GetHelpIntent help
+GetHelpIntent help me please
+GetHelpIntent help me
+GetHelpIntent find some help
+GetHelpIntent help help help

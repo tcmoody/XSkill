@@ -79,6 +79,8 @@ function onIntent(intentRequest, session, callback) {
     // Dispatch to your skill's intent handlers
     if("GetRegistrationCodeIntent" === intentName){
         getRegistrationCode(intent, session, callback);
+    }else if("GetHelpIntent" === intentName){
+      getWelcomeResponse(callback, session);
     }else if ("AMAZON.HelpIntent" === intentName) {
       //CHANGE THIS SHOULD PROBABLY CALL GET REGISTRATION CODE
         getWelcomeResponse(callback, session);
@@ -109,9 +111,7 @@ function onSessionEnded(sessionEndedRequest, session) {
 * 2b) if user exists register call for help in database
 */
 function getWelcomeResponse(callback, session){
-
  api.service(session.user.userId, welcomeCallback, callback);
-
 }
 
 function welcomeCallback(result, callback){
