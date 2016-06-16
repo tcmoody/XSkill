@@ -62,7 +62,6 @@ function onLaunch(launchRequest, session, callback) {
 
     // Dispatch to your skill's launch.
     getWelcomeResponse(callback);
-    getService(launchRequest, session, callback);
 }
 
 /**
@@ -109,10 +108,11 @@ function onSessionEnded(sessionEndedRequest, session) {
 * 2a) if user does not exist give them registration token
 * 2b) if user exists register call for help in database
 */
-function getWelcomResponse(callback){
+function getWelcomeResponse(callback){
   var sessionAttributes = {};
   var cardTitle = "Welcome";
   var speechOutput = "Welcome to the Number Guessing Game.";
+  var repromptText = ""
   var shouldEndSession = false;
 
 
@@ -120,33 +120,21 @@ function getWelcomResponse(callback){
       buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
 
-//tell user that request has been handeled
-function handleSessionEndRequest(callback) {
-
-}
-
-//lookup the registration code if the user has forgotten theirs
-function getRegistrationCode(intent, session, callback){
-
-}
-
-function getService(intent, session, callback){
-  
-}
+// //tell user that request has been handeled
+// function handleSessionEndRequest(callback) {
+//
+// }
+//
+// //lookup the registration code if the user has forgotten theirs
+// function getRegistrationCode(intent, session, callback){
+//
+// }
+//
+// function getService(intent, session, callback){
+//
+// }
 
 // --------------- Functions that control the skill's behavior -----------------------
-//RESPONSE ON SKILL LAUNCH
-function getWelcomeResponse(callback) {
-    // If we wanted to initialize the session to have some attributes we could add those here.
-    var sessionAttributes = {};
-    var cardTitle = "Welcome";
-    var speechOutput = "Welcome to the Number Guessing Game.";
-    // If the user either does not reply to the welcome message or says something that is not
-    // understood, they will be prompted again with this text.
-    var repromptText =  "Please Guess a number between one and ten.";
-    var shouldEndSession = false;
-    sessionAttributes = createNumberAttribute();
-}
 
 //ALL I DID WAS CHANGE THE STRING VALUES
 function handleSessionEndRequest(callback) {
