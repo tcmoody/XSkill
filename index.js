@@ -111,32 +111,46 @@ function onSessionEnded(sessionEndedRequest, session) {
 function getWelcomeResponse(callback, session){
 
  api.service(session.user.userId, welcomeCallback, callback);
- 
+
 }
 
 function welcomeCallback(result, callback){
   var sessionAttributes = {};
   var cardTitle = "Welcome";
-  var speechOutput = result;
+  var speechOutput = "your request for help has been processed";
   var repromptText = ""
   var shouldEndSession = false;
 
+  var resJson = JSON.parse(result);
+  var unregistered = resJson.registration_id;
+
+  if(unregistered){
+    registrationCodeCallback(result ,callback);
+  }else{
+      callback(sessionAttributes,
+          buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+  }
+}
+
+//lookup the registration code if the user has forgotten theirs
+function getRegistrationCode(intent, session, callback){
+ api.regcode(session.user.userId, welcomeCallback, callback);
+}
+
+function registrationCodeCallback(result, callback){
+  var sessionAttributes = {};
+  var cardTitle = "Welcome";
+  var speechOutput = "your registration code is ";
+  var repromptText = ""
+  var shouldEndSession = false;
+
+  var resJson = JSON.parse(result);
+  var unregistered = resJson.registration_id;
+
+  speechOutput += unregistered;
   callback(sessionAttributes,
       buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
-// //tell user that request has been handeled
-// function handleSessionEndRequest(callback) {
-//
-// }
-//
-// //lookup the registration code if the user has forgotten theirs
-// function getRegistrationCode(intent, session, callback){
-//
-// }
-//
-// function getService(intent, session, callback){
-//
-// }
 
 // --------------- Functions that control the skill's behavior -----------------------
 
