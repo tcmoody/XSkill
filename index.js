@@ -145,9 +145,9 @@ function registrationCodeCallback(result, callback){
   var shouldEndSession = false;
 
   var resJson = JSON.parse(result);
-  var unregistered = "<say-as interpret-as='spell-out'>" + resJson.registration_id + "</say-as>";
+  var unregistered = resJson.registration_id;
 
-  speechOutput += unregistered;
+  speechOutput = speechOutput + "<break/> <say-as interpret-as='spell-out'>" +  unregistered + "</say-as>";
   callback(sessionAttributes,
       buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
@@ -168,7 +168,7 @@ function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
     return {
         outputSpeech: {
             type: "SSML",
-            text: "<speak>" + output + "</speak>";
+            ssml: "<speak>" + output + "</speak>"
         },
         card: {
             type: "Simple",
