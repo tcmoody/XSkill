@@ -145,7 +145,7 @@ function registrationCodeCallback(result, callback){
   var shouldEndSession = false;
 
   var resJson = JSON.parse(result);
-  var unregistered = resJson.registration_id;
+  var unregistered = "<say-as interpret-as='spell-out'>" + resJson.registration_id + "</say-as>";
 
   speechOutput += unregistered;
   callback(sessionAttributes,
@@ -157,7 +157,7 @@ function registrationCodeCallback(result, callback){
 //ALL I DID WAS CHANGE THE STRING VALUES
 function handleSessionEndRequest(callback) {
     var cardTitle = "Session Ended";
-    var speechOutput = "Thank you for playing the number guessing game. Have a Fantastic Day!";
+    var speechOutput = "We have processed your request for help";
     // Setting this to true ends the session and exits the skill.
     var shouldEndSession = true;
 
@@ -167,8 +167,8 @@ function handleSessionEndRequest(callback) {
 function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
     return {
         outputSpeech: {
-            type: "PlainText",
-            text: output
+            type: "SSML",
+            text: "<speak>" + output + "</speak>";
         },
         card: {
             type: "Simple",
