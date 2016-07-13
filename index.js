@@ -122,13 +122,20 @@ function welcomeCallback(result, callback){
   var shouldEndSession = false;
 
   var resJson = JSON.parse(result);
-  var unregistered = resJson.registration_id;
-
-  if(unregistered){
-    registrationCodeCallback(result ,callback);
-  }else{
+  if(resJson.message == 'request processed'){
       callback(sessionAttributes,
           buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+
+  }else if(resJson.message == 'no careivers registered'){
+     speechOutput = "We could not process your request because you have no caregivers associated with your account";
+        callback(sessionAttributes,
+            buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+  }else if(resJson.sucess == 'false'){
+     speechOutput = "We are currently experiencing trouble. Please try again";
+        callback(sessionAttributes,
+            buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+  } else{
+      registrationCodeCallback(result ,callback);
   }
 }
 
@@ -145,7 +152,7 @@ function registrationCodeCallback(result, callback){
   var shouldEndSession = false;
 
   var resJson = JSON.parse(result);
-  var unregistered = resJson.registration_id;
+  var unregistered = resJson.data.registration_id;
 
   speechOutput = speechOutput + "<break/> <say-as interpret-as='spell-out'>" +  unregistered + "</say-as>";
   callback(sessionAttributes,
