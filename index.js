@@ -5,15 +5,10 @@ exports.handler = function (event, context) {
     try {
         console.log("event.session.application.applicationId=" + event.session.application.applicationId);
 
-        /**
-         * Uncomment this if statement and populate with your skill's application ID to
-         * prevent someone else from configuring a skill that sends requests to this function.
-         */
-        /*
-        if (event.session.application.applicationId !== "amzn1.echo-sdk-ams.app.[unique-value-here]") {
+        //Only allow this skill to use the lambda function
+        if (event.session.application.applicationId !== "amzn1.echo-sdk-ams.app.0e672e82-bdf7-410c-bce4-cb65e98ab72f") {
              context.fail("Invalid Application ID");
         }
-        */
 
         if (event.session.new) {
             onSessionStarted({requestId: event.request.requestId}, event.session);
@@ -42,10 +37,8 @@ exports.handler = function (event, context) {
 
 /**
  * Called when the session starts.
+ * logs session
  */
- //I DONT THINK THIS DOES ANYTHING
- //JUST LOGS TO THE CONSOLE
- //I GUESS WE COULD ADD STUFF HERE AS NEEDED
 function onSessionStarted(sessionStartedRequest, session) {
     console.log("onSessionStarted requestId=" + sessionStartedRequest.requestId +
         ", sessionId=" + session.sessionId);
@@ -54,21 +47,17 @@ function onSessionStarted(sessionStartedRequest, session) {
 /**
  * Called when the user launches the skill without specifying what they want.
  */
-
- //OVERRIDE THE getWelcomeResponse TO CHANGE WHAT HAPPENDS WHEN THE SKILL IS LAUNCHED
 function onLaunch(launchRequest, session, callback) {
     console.log("onLaunch requestId=" + launchRequest.requestId +
         ", sessionId=" + session.sessionId);
 
-    // Dispatch to your skill's launch.
     getWelcomeResponse(callback, session);
 }
 
 /**
  * Called when the user specifies an intent for this skill.
+ * This does all the intent routing
  */
- //THIS DOES ALL THE INTENT ROUTING. ITS SUPER SIMPLE.
- //WATCHOUT FOR THE DIFFERENCE BETWEEN == and ===
 function onIntent(intentRequest, session, callback) {
     console.log("onIntent requestId=" + intentRequest.requestId +
         ", sessionId=" + session.sessionId);
@@ -95,25 +84,21 @@ function onIntent(intentRequest, session, callback) {
  * Called when the user ends the session.
  * Is not called when the skill returns shouldEndSession=true.
  */
-
- //I DIDN'T DO ANYHTING HERE
 function onSessionEnded(sessionEndedRequest, session) {
     console.log("onSessionEnded requestId=" + sessionEndedRequest.requestId +
         ", sessionId=" + session.sessionId);
-    // Add cleanup logic here
 }
 
 
+
 /**
-*this need to
-* 1) see if user exists
-* 2a) if user does not exist give them registration token
-* 2b) if user exists register call for help in database
+* This makes a call to the api to request help
 */
 function getWelcomeResponse(callback, session){
  api.service(session.user.userId, welcomeCallback, callback);
 }
 
+// This handles the return from the api call
 function welcomeCallback(result, callback){
   var sessionAttributes = {};
   var cardTitle = "Welcome";
@@ -122,31 +107,41 @@ function welcomeCallback(result, callback){
   var shouldEndSession = false;
 
   var resJson = JSON.parse(result);
+  // Call for help suceeded
   if(resJson.message == 'request processed'){
       callback(sessionAttributes,
           buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
-  }else if(resJson.message == 'user exists'){
+  }
+  // This happens if you try to register the same device twice
+  else if(resJson.message == 'user exists'){
      speechOutput = "This device is already registered to a user";
         callback(sessionAttributes,
             buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
-  }else if(resJson.message == 'no careivers registered'){
+  }
+  // Response if user had no caregivers registered
+  else if(resJson.message == 'no careivers registered'){
      speechOutput = "We could not process your request because you have no caregivers associated with your account";
         callback(sessionAttributes,
             buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
-  }else if(resJson.sucess == 'false'){
+  }
+  // This handles all server errors
+  else if(resJson.sucess == 'false'){
      speechOutput = "We are currently experiencing trouble. Please try again";
         callback(sessionAttributes,
             buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
-  } else{
+  }
+  // If the device is not regsistered this initiates the registration process
+  else{
       registrationCodeCallback(result ,callback);
   }
 }
 
-//lookup the registration code if the user has forgotten theirs
+//lookup the registration code or initiate registration process
 function getRegistrationCode(intent, session, callback){
  api.lookup(session.user.userId, welcomeCallback, callback);
 }
 
+//This reads out the registration code to the user
 function registrationCodeCallback(result, callback){
   var sessionAttributes = {};
   var cardTitle = "Welcome";
@@ -164,7 +159,7 @@ function registrationCodeCallback(result, callback){
 
 // --------------- Functions that control the skill's behavior -----------------------
 
-//ALL I DID WAS CHANGE THE STRING VALUES
+// What to do when session ends/ goodbye message
 function handleSessionEndRequest(callback) {
     var cardTitle = "Session Ended";
     var speechOutput = "We have processed your request for help";
@@ -174,6 +169,8 @@ function handleSessionEndRequest(callback) {
     callback({}, buildSpeechletResponse(cardTitle, speechOutput, null, shouldEndSession));
 }
 
+
+// This builds and appropreate JSON response for speech output
 function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
     return {
         outputSpeech: {
@@ -195,6 +192,7 @@ function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
     };
 }
 
+// this builds the overall json response
 function buildResponse(sessionAttributes, speechletResponse) {
     return {
         version: "1.0",
