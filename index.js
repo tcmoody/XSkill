@@ -125,7 +125,10 @@ function welcomeCallback(result, callback){
   if(resJson.message == 'request processed'){
       callback(sessionAttributes,
           buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
-
+  }else if(resJson.message == 'user exists'){
+     speechOutput = "This device is already registered to a user";
+        callback(sessionAttributes,
+            buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
   }else if(resJson.message == 'no careivers registered'){
      speechOutput = "We could not process your request because you have no caregivers associated with your account";
         callback(sessionAttributes,
@@ -141,7 +144,7 @@ function welcomeCallback(result, callback){
 
 //lookup the registration code if the user has forgotten theirs
 function getRegistrationCode(intent, session, callback){
- api.regcode(session.user.userId, welcomeCallback, callback);
+ api.lookup(session.user.userId, welcomeCallback, callback);
 }
 
 function registrationCodeCallback(result, callback){
