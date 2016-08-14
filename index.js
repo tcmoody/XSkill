@@ -6,7 +6,7 @@ exports.handler = function (event, context) {
         console.log("event.session.application.applicationId=" + event.session.application.applicationId);
 
         //Only allow this skill to use the lambda function
-        if (event.session.application.applicationId !== "amzn1.echo-sdk-ams.app.0e672e82-bdf7-410c-bce4-cb65e98ab72f") {
+        if (event.session.application.applicationId !== "amzn1.ask.skill.544e1f3f-bd8d-450f-a2af-020d3ae4cb9d") {
              context.fail("Invalid Application ID");
         }
 
@@ -70,6 +70,8 @@ function onIntent(intentRequest, session, callback) {
         getRegistrationCode(intent, session, callback);
     }else if("GetHelpIntent" === intentName){
       getWelcomeResponse(callback, session);
+    }else if("GetHelpMessageIntent" === intentName){
+      getMessageResponse(callback,intentRequest, session);
     }else if ("AMAZON.HelpIntent" === intentName) {
       //CHANGE THIS SHOULD PROBABLY CALL GET REGISTRATION CODE
         getWelcomeResponse(callback, session);
@@ -95,9 +97,15 @@ function onSessionEnded(sessionEndedRequest, session) {
 * This makes a call to the api to request help
 */
 function getWelcomeResponse(callback, session){
- api.service(session.user.userId, welcomeCallback, callback);
+ api.service(session.user.userId, "help", welcomeCallback, callback);
 }
 
+/**
+*this function makes api request with message
+*/
+function getMessageResponse(callback,request, session){
+   api.service(session.user.userId, request.intent.slots.Message.value, welcomeCallback, callback);
+}
 // This handles the return from the api call
 function welcomeCallback(result, callback){
   var sessionAttributes = {};

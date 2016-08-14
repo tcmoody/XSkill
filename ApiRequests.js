@@ -39,9 +39,9 @@ exports.regcode = function  (device_id , callback, doubleCallback){
   request(lookup_url, callback, doubleCallback);
 }
 
-exports.service = function (device_id , callback, doubleCallback){
+exports.service = function (device_id , message,  callback, doubleCallback){
   var path = "/api/service"
-  var lookup_url = url + path + "?device_id=" + device_id;
+  var lookup_url = url + path + "?device_id=" + device_id + "&message=" + encodeURIComponent(message);
   request(lookup_url, callback, doubleCallback);
 }
 

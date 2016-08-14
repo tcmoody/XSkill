@@ -9,3 +9,8 @@ GetHelpIntent help me please
 GetHelpIntent help me
 GetHelpIntent find some help
 GetHelpIntent help help help
+GetHelpMessageIntent {I have fallen and I cant get up|Message}
+GetHelpMessageIntent {I am sick and I cannot get out of bed|Message}
+GetHelpMessageIntent {Just testing|Message}
+GetHelpMessageIntent {This is just a test|Message}
+GetHelpMessageIntent {I am hurt|Message}

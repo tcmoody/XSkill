@@ -5,6 +5,15 @@
     },
     {
       "intent": "GetHelpIntent"
+    },
+    {
+      "intent": "GetHelpMessageIntent",
+      "slots": [
+        {
+          "name": "Message",
+          "type": "AMAZON.LITERAL"
+        }
+      ]
     }
   ]
 }
