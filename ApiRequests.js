@@ -1,6 +1,6 @@
 var https = require('http');
-var url = "www.callmyguardian.com";
-// var url = "localhost"
+// var url = "http://www.callmyguardian.com";
+var url = "http://localhost:3000"
 
 
 /**
@@ -26,52 +26,27 @@ var url = "www.callmyguardian.com";
 
 var self = this;
 var exports = module.exports = {};
-var querystring = require('querystring');
 
 exports.lookup = function (device_id , callback, doubleCallback){
   var path = "/api/lookup"
-
-  var post_data = {
-    'device_id' : device_id
-  }
-
-  request(path, post_data, callback, doubleCallback);
+  var lookup_url = url + path + "?device_id=" + device_id;
+  request(lookup_url, callback, doubleCallback);
 }
 
 exports.regcode = function  (device_id , callback, doubleCallback){
   var path = "/api/regcode"
-
-  var post_data = {
-    'device_id' : device_id
-  }
-
-  request(path, post_data, callback, doubleCallback);
+  var lookup_url = url + path + "?device_id=" + device_id;
+  request(lookup_url, callback, doubleCallback);
 }
 
 exports.service = function (device_id , message,  callback, doubleCallback){
   var path = "/api/service"
-
-  var post_data = {
-    'device_id' : device_id,
-    'message' : message
-  }
-
-  request(path, post_data, callback, doubleCallback);
+  var lookup_url = url + path + "?device_id=" + device_id + "&message=" + encodeURIComponent(message);
+  request(lookup_url, callback, doubleCallback);
 }
 
-function request(request_path, post_data, callback, doubleCallback){
-
-  var post_options = {
-    host: url,
-    path: request_path,
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Content-Length': Buffer.byteLength(post_data)
-    }
-  }
-
-  https.request(post_options, function(res){
+function request(url, callback, doubleCallback){
+  https.get(url, function(res){
     var body = '';
 
     res.on('data', function(chunk){
