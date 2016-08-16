@@ -5,12 +5,12 @@ var api = require('./ApiRequests.js');
 // returns registration code if not registered
 
 
-api.lookup(1,callback, callback);
+api.lookup(1,callback, null);
 
 
 //looks up a registration code by a device ID
 //returns a registration code
-api.regcode(1,callback, callback);
+api.regcode(1,callback, null);
 
 //adds a help request to the database
 //returns success
